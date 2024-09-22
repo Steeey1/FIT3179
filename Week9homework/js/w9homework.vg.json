@@ -1,0 +1,40 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Australia water usage for eact state in 2022",
+    "width": 800,
+    "height": 400,
+    "projection": {"type": "equalEarth"},
+    "data": {
+      "url": "/js/aiagin.json",
+      "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
+    },
+    "transform": [
+      {
+        "lookup": "properties.NAME",
+        "from": {
+          "data": {
+            "url": "/data/au-water-industryandhome.csv"
+          },
+          "key": "State",
+          "fields": ["Active"]
+        }
+      },
+      {"calculate": "datum.Active + 0.1", "as": "Industry Water Consumption"}
+    ],
+    "mark": {"type": "geoshape", "stroke": "white"},
+    "encoding": {
+      "color": {
+        "field": "Industry Water Consumption",
+        "type": "quantitative",
+        "scale": {
+          "type": "log",
+          "domain": [1,100,1000,10000,100000]
+        }
+      },
+      "tooltip": [
+        {"field": "properties.NAME", "type": "nominal", "title": "State"},
+        {"field": "Industry", "type": "quantitative"}
+      ]
+    }
+  }
+    
