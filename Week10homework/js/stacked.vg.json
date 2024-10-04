@@ -1,0 +1,33 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/au-water-industryandhome.csv"
+        },
+        "repeat": {"layer": ["Industry", "Households"]},
+        "spec": {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "State",
+              "type": "nominal",
+              "title": "State"
+            },
+            "y": {
+              "field": {"repeat": "layer"},
+              "type": "quantitative",
+              "title": "Water Usage"
+            },
+            "color": {"datum": {"repeat": "layer"}, "title": "Channel"},
+            "xOffset": {"datum": {"repeat": "layer"}}
+          }
+        },
+        "transform": [
+          {
+            "filter": "State_selection == null || datum.State == State_selection"
+          }
+        ],
+        "config": {
+          "mark": {"invalid": null}
+        }
+  }
+  
