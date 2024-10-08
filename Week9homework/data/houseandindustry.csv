@@ -1,9 +1,33 @@
-Year,Househodls Distributed water,Households Sewerage and wastewater services,Industry Distributed water,Industry Sewerage and wastewater services
-2015,5893,5323,2347,1211
-2016,6039,5555,2629,1239
-2017,5857,5497,2645,1279
-2018,6070,5727,2909,1319
-2019,6223,5778,3157,1341
-2020,6382,6287,2857,1337
-2021,6155,6142,3011,1350
-2022,6088,6279,3160,1421
+Year,Type,Price
+2015,Househodls Distributed water,5893
+2015,Households Sewerage and wastewater,5323
+2015,Industry Distributed water,2347
+2015,Industry Sewerage and wastewater,1211
+2016,Househodls Distributed water,6039
+2016,Households Sewerage and wastewater,5555
+2016,Industry Distributed water,2629
+2016,Industry Sewerage and wastewater,1239
+2017,Househodls Distributed water,5857
+2017,Households Sewerage and wastewater,5497
+2017,Industry Distributed water,2645
+2017,Industry Sewerage and wastewater,1279
+2018,Househodls Distributed water,6070
+2018,Households Sewerage and wastewater,5727
+2018,Industry Distributed water,2909
+2018,Industry Sewerage and wastewater,1319
+2019,Househodls Distributed water,6223
+2019,Households Sewerage and wastewater,5778
+2019,Industry Distributed water,3157
+2019,Industry Sewerage and wastewater,1341
+2020,Househodls Distributed water,6382
+2020,Households Sewerage and wastewater,6287
+2020,Industry Distributed water,2857
+2020,Industry Sewerage and wastewater,1337
+2021,Househodls Distributed water,6155
+2021,Households Sewerage and wastewater,6142
+2021,Industry Distributed water,3011
+2021,Industry Sewerage and wastewater,1350
+2022,Househodls Distributed water,6088
+2022,Households Sewerage and wastewater,6279
+2022,Industry Distributed water,3160
+2022,Industry Sewerage and wastewater,1421
