@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Import Vega & Vega-Lite (does not have to be from CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.21.0"></script>
+  
+</head>
+<body>
+
+  <h1>Australia Water Usage for Each State in 2022</h1>
+
+  <!-- One Single Dropdown for State Selection -->
+  <div>
+    <label for="state-selection">State Selection:</label>
+    <select id="state-selection" onchange="updateVisualizations(this.value)">
+      <option value="">Show All</option>
+      <option value="Victoria">Victoria</option>
+      <option value="Queensland">Queensland</option>
+      <option value="Tasmania">Tasmania</option>
+      <option value="New South Wales">New South Wales</option>
+      <option value="Western Australia">Western Australia</option>
+      <option value="South Australia">South Australia</option>
+      <option value="Northern Territory">Northern Territory</option>
+      <option value="Australian Capital Territory">Australian Capital Territory</option>
+    </select>
+  </div>
+
+  <!-- Map Visualization -->
+  <div id="map-viz"></div>
+  <div id="map-vie"></div>
+  <!-- Bar Chart Visualization -->
+  <div id="bar-viz"></div>
+  <div id = "line-viz"></div>
+
+  <script type="text/javascript">
+    // Function to update both visualizations when the dropdown is changed
+    function updateVisualizations(selectedState) {
+      var stateSelection = selectedState ? selectedState : null;
+
+      // Update Map Visualization
+      var mapSpec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Australia Water Usage for Each State in 2022",
+  "width": 800,
+  "height": 600,  // Increased the height for better layout
+  "projection": {"type": "equalEarth"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/js/georef-australia-state-millesime.json",
+    "format": {
+      "type": "topojson",
+      "feature": "georef-australia-state-millesime"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "replace(replace(replace(datum.properties.ste_name, '[', ''), ']', ''), \"'\", '')",
+      "as": "cleaned_ste_name"
+    },
+    {
+      "calculate": "replace(datum.cleaned_ste_name, \"'\", '')",
+      "as": "final_cleaned_ste_name"
+    },
+    {
+      "lookup": "final_cleaned_ste_name",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/au-water-industryandhome.csv"
+        },
+        "key": "State",
+        "fields": ["Industry"]
+      }
+    },
+    {
+      "filter": stateSelection ? "datum.final_cleaned_ste_name == '" + stateSelection + "'" : "true"
+    },
+    {
+      "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? 144.9631 : datum.final_cleaned_ste_name == 'New South Wales' ? 151.2093 : datum.final_cleaned_ste_name == 'Queensland' ? 153.0260 : datum.final_cleaned_ste_name == 'South Australia' ? 138.6007 : datum.final_cleaned_ste_name == 'Western Australia' ? 115.8575 : datum.final_cleaned_ste_name == 'Tasmania' ? 147.3257 : datum.final_cleaned_ste_name == 'Northern Territory' ? 133.7751 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? 149.1300 : null",
+      "as": "centroid_longitude"
+    },
+    {
+      "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? -37.8136 : datum.final_cleaned_ste_name == 'New South Wales' ? -33.8688 : datum.final_cleaned_ste_name == 'Queensland' ? -27.4698 : datum.final_cleaned_ste_name == 'South Australia' ? -34.9285 : datum.final_cleaned_ste_name == 'Western Australia' ? -31.9505 : datum.final_cleaned_ste_name == 'Tasmania' ? -42.8821 : datum.final_cleaned_ste_name == 'Northern Territory' ? -12.4634 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? -35.2809 : null",
+      "as": "centroid_latitude"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "geoshape",
+        "stroke": "black"
+      },
+      "encoding": {
+        "color": {
+          "field": "Industry",
+          "type": "quantitative",
+          "scale": {
+            "type": "linear",
+            "domain": [0, 1000],
+            "range": ["#e0f3db", "#43a2ca"]
+          }
+        },
+        "opacity": {"value": 0.6},
+        "tooltip": [
+          {"field": "final_cleaned_ste_name", "type": "nominal", "title": "State"},
+          {
+            "field": "Industry",
+            "type": "quantitative",
+            "title": "Industry Water Consumption"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 14,  // Increased font size for better readability
+        "fontStyle": "bold",
+        "align": "center",
+        "baseline": "middle"
+      },
+      "encoding": {
+        "text": {"field": "final_cleaned_ste_name"},
+        "longitude": {"field": "centroid_longitude"}, 
+        "latitude": {"field": "centroid_latitude"}, 
+        "color": {"value": "black"}
+      }
+    }
+  ]
+};
+    var mappSpec = {
+
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Australia Water Usage for Each State in 2022",
+  "width": 800,
+  "height": 600,  // Increased the height for better layout
+  "projection": {"type": "equalEarth"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/js/georef-australia-state-millesime.json",
+    "format": {
+      "type": "topojson",
+      "feature": "georef-australia-state-millesime"
+    }
+  },
+  "transform": [
+    {
+      "calculate": "replace(replace(replace(datum.properties.ste_name, '[', ''), ']', ''), \"'\", '')",
+      "as": "cleaned_ste_name"
+    },
+    {
+      "calculate": "replace(datum.cleaned_ste_name, \"'\", '')",
+      "as": "final_cleaned_ste_name"
+    },
+    {
+      "lookup": "final_cleaned_ste_name",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/au-water-industryandhome.csv"
+        },
+        "key": "State",
+        "fields": ["Households"]
+      }
+    },
+    {
+      "filter": stateSelection ? "datum.final_cleaned_ste_name == '" + stateSelection + "'" : "true"
+    },
+    {
+      "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? 144.9631 : datum.final_cleaned_ste_name == 'New South Wales' ? 151.2093 : datum.final_cleaned_ste_name == 'Queensland' ? 153.0260 : datum.final_cleaned_ste_name == 'South Australia' ? 138.6007 : datum.final_cleaned_ste_name == 'Western Australia' ? 115.8575 : datum.final_cleaned_ste_name == 'Tasmania' ? 147.3257 : datum.final_cleaned_ste_name == 'Northern Territory' ? 133.7751 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? 149.1300 : null",
+      "as": "centroid_longitude"
+    },
+    {
+      "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? -37.8136 : datum.final_cleaned_ste_name == 'New South Wales' ? -33.8688 : datum.final_cleaned_ste_name == 'Queensland' ? -27.4698 : datum.final_cleaned_ste_name == 'South Australia' ? -34.9285 : datum.final_cleaned_ste_name == 'Western Australia' ? -31.9505 : datum.final_cleaned_ste_name == 'Tasmania' ? -42.8821 : datum.final_cleaned_ste_name == 'Northern Territory' ? -12.4634 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? -35.2809 : null",
+      "as": "centroid_latitude"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "geoshape",
+        "stroke": "black"
+      },
+      "encoding": {
+        "color": {
+          "field": "Households",
+          "type": "quantitative",
+          "scale": {
+            "type": "linear",
+            "domain": [0, 1000],
+            "range": ["#e0f3db", "#43a2ca"]
+          }
+        },
+        "opacity": {"value": 0.6},
+        "tooltip": [
+          {"field": "final_cleaned_ste_name", "type": "nominal", "title": "State"},
+          {
+            "field": "Households",
+            "type": "quantitative",
+            "title": "Households Water Consumption"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 14,  // Increased font size for better readability
+        "fontStyle": "bold",
+        "align": "center",
+        "baseline": "middle"
+      },
+      "encoding": {
+        "text": {"field": "final_cleaned_ste_name"},
+        "longitude": {"field": "centroid_longitude"}, 
+        "latitude": {"field": "centroid_latitude"}, 
+        "color": {"value": "black"}
+      }
+    }
+  ]
+};
+
+      // Update Bar Chart Visualization
+      var barSpec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {
+          "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/au-water-industryandhome.csv"
+        },
+        "repeat": {"layer": ["Industry", "Households"]},
+        "spec": {
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "State",
+              "type": "nominal",
+              "title": "State"
+            },
+            "y": {
+              "field": {"repeat": "layer"},
+              "type": "quantitative",
+              "title": "Water Usage"
+            },
+            "color": {"datum": {"repeat": "layer"}, "title": "Channel"},
+            "xOffset": {"datum": {"repeat": "layer"}}
+          }
+        },
+        "transform": [
+          {
+            "filter": stateSelection ? "datum.State == '" + stateSelection + "'" : "true"
+          }
+        ],
+        "config": {
+          "mark": {"invalid": null}
+        }
+      };
+
+
+      var lineSpec={
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/houseandindustry.csv"
+  },
+  "width": 600,
+  "height": 300,
+  "layer": [
+    {
+      "encoding": {
+        "x": {"field": "Year", "type": "temporal"},
+        "y": {"field": "Price", "type": "quantitative"},
+        "color": {"field": "Type", "type": "nominal","legend": {
+    "labelLimit": 200
+  }}
+      },
+      "layer": [
+        {"mark": "line"},
+        {
+          "params": [
+            {
+              "name": "label",
+              "select": {
+                "type": "point",
+                "encodings": ["x"],
+                "nearest": true,
+                "on": "pointerover"
+              }
+            }
+          ],
+          "mark": "point",
+          "encoding": {
+            "opacity": {
+              "condition": {"param": "label", "empty": false, "value": 1},
+              "value": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "transform": [{"filter": {"param": "label", "empty": false}}],
+      "layer": [
+        {
+          "mark": {"type": "rule", "color": "gray"},
+          "encoding": {
+            "x": {"type": "temporal", "field": "Year"}
+          }
+        },
+        {
+          "encoding": {
+            "text": {"type": "quantitative", "field": "Price"},
+            "x": {"type": "temporal", "field": "Year", "timeUnit": "year"},
+            "y": {"type": "quantitative", "field": "Price","title":"Expenditure in million Australian dollars"}
+          },
+          "layer": [
+            {
+              "mark": {
+                "type": "text",
+                "stroke": "white",
+                "strokeWidth": 2,
+                "align": "left",
+                "dx": 5,
+                "dy": -5
+              }
+            },
+            {
+              "mark": {"type": "text", "align": "left", "dx": 5, "dy": -5},
+              "encoding": {"color": {"type": "nominal", "field": "Type"}}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+      
+
+      // Embed the visualizations in the HTML divs
+      vegaEmbed('#map-viz', mapSpec);
+      vegaEmbed('#map-vie', mappSpec);
+      vegaEmbed('#bar-viz', barSpec);
+      vegaEmbed('#line-viz',lineSpec);
+    }  
+    // Initial Load with No Filters (Show All States)
+    updateVisualizations(null);
+  </script>
+</body>
+</html>

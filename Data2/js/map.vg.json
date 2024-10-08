@@ -1,0 +1,127 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Australia Water Usage for Each State in 2022",
+    "width": 800,
+    "height": 400,
+    "projection": {"type": "equalEarth"},
+    "data": {
+      "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/js/georef-australia-state-millesime.json",
+      "format": {
+        "type": "topojson",
+        "feature": "georef-australia-state-millesime"
+      }
+    },
+    "transform": [
+      {
+        "calculate": "replace(replace(replace(datum.properties.ste_name, '[', ''), ']', ''), \"'\", '')",
+        "as": "cleaned_ste_name"
+      },
+      {
+        "calculate": "replace(datum.cleaned_ste_name, \"'\", '')",
+        "as": "final_cleaned_ste_name"
+      },
+      {
+        "lookup": "final_cleaned_ste_name",
+        "from": {
+          "data": {
+            "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/au-water-industryandhome.csv"
+          },
+          "key": "State",
+          "fields": ["Households"]
+        }
+      },
+      {
+        "filter": "State_selection == null || datum.final_cleaned_ste_name == State_selection"
+      },
+      {
+        "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? 144.9631 : datum.final_cleaned_ste_name == 'New South Wales' ? 151.2093 : datum.final_cleaned_ste_name == 'Queensland' ? 153.0260 : datum.final_cleaned_ste_name == 'South Australia' ? 138.6007 : datum.final_cleaned_ste_name == 'Western Australia' ? 115.8575 : datum.final_cleaned_ste_name == 'Tasmania' ? 147.3257 : datum.final_cleaned_ste_name == 'Northern Territory' ? 133.7751 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? 149.1300 : null",
+        "as": "centroid_longitude"
+      },
+      {
+        "calculate": "datum.final_cleaned_ste_name == 'Victoria' ? -37.8136 : datum.final_cleaned_ste_name == 'New South Wales' ? -33.8688 : datum.final_cleaned_ste_name == 'Queensland' ? -27.4698 : datum.final_cleaned_ste_name == 'South Australia' ? -34.9285 : datum.final_cleaned_ste_name == 'Western Australia' ? -31.9505 : datum.final_cleaned_ste_name == 'Tasmania' ? -42.8821 : datum.final_cleaned_ste_name == 'Northern Territory' ? -12.4634 : datum.final_cleaned_ste_name == 'Australian Capital Territory' ? -35.2809 : null",
+        "as": "centroid_latitude"
+      }
+    ],
+    "params": [
+      {
+        "name": "State_selection",
+        "bind": {
+          "input": "select",
+          "options": [
+            null,
+            "Victoria",
+            "Queensland",
+            "Tasmania",
+            "New South Wales",
+            "Western Australia",
+            "South Australia",
+            "Northern Territory",
+            "Australian Capital Territory"
+          ],
+          "labels": [
+            "Show All",
+            "Victoria",
+            "Queensland",
+            "Tasmania",
+            "New South Wales",
+            "Western Australia",
+            "South Australia",
+            "Northern Territory",
+            "Australian Capital Territory"
+          ],
+          "name": "State Selection:"
+        }
+      }
+    ],
+    "layer": [
+      {
+        "mark": {
+          "type": "geoshape",
+          "stroke": "black"
+        },
+        "encoding": {
+          "color": {
+            "field": "Households",
+            "type": "quantitative",
+            "scale": {
+              "type": "linear",
+              "domain": [0, 1000],
+              "range": ["#e0f3db", "#43a2ca"]
+            }
+          },
+          "opacity": {"value": 0.6},
+          "tooltip": [
+            {"field": "final_cleaned_ste_name", "type": "nominal", "title": "State"},
+            {
+              "field": "Households",
+              "type": "quantitative",
+              "title": "Households Water Consumption"
+            }
+          ]
+        }
+      },
+      {
+        "mark": {
+          "type": "text",
+          "fontSize": 10,
+          "fontStyle": "italic",
+          "align": "center",
+          "baseline": "middle"
+        },
+        "encoding": {
+          "text": {"field": "final_cleaned_ste_name"},
+          "longitude": {"field": "centroid_longitude"}, 
+          "latitude": {"field": "centroid_latitude"}, 
+          "color": {"value": "black"},
+          "tooltip": [
+            {"field": "final_cleaned_ste_name", "type": "nominal", "title": "State"},
+            {
+              "field": "Households",
+              "type": "quantitative",
+              "title": "Households Water Consumption"
+            }
+          ]
+        }
+      }
+    ]
+  }
