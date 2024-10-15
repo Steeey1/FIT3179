@@ -1,0 +1,111 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Week9homework/data/houseandindustry.csv"
+    },
+    "width": 600,
+    "height": 300,
+    "layer": [
+      {
+        "encoding": {
+          "x": {
+            "field": "Year",
+            "type": "temporal",
+            "axis": {
+              "format": "%Y", 
+              "tickCount": 5,
+              "labelOverlap": true,
+              "title": "Year"
+            }
+          },
+          "y": {
+            "field": "Price",
+            "type": "quantitative",
+            "title": "Expenditure in million Australian dollars"
+          },
+          "color": {
+            "field": "Type",
+            "type": "nominal",
+            "legend": {"labelLimit": 200}
+          }
+        },
+        "layer": [
+          {"mark": "line"},
+          {
+            "params": [
+              {
+                "name": "hover",
+                "select": {
+                  "type": "point",
+                  "encodings": ["x"],
+                  "nearest": true,
+                  "on": "mouseover"  
+                }
+              }
+            ],
+            "mark": {
+              "type": "point",
+              "filled": true,
+              "size": 100
+            },
+            "encoding": {
+              "opacity": {
+                "condition": {"param": "hover", "value": 1},
+                "value": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "transform": [{"filter": {"param": "hover", "empty": false}}],
+        "layer": [
+          {
+            "mark": {"type": "rule", "color": "gray"},
+            "encoding": {
+              "x": {
+                "type": "temporal",
+                "field": "Year",
+                "aggregate": "min"
+              }
+            }
+          },
+          {
+            "encoding": {
+              "text": {"type": "quantitative", "field": "Price"},
+              "x": {
+                "type": "temporal", 
+                "field": "Year", 
+                "timeUnit": "year", 
+                "title": "Year"
+              },
+              "y": {
+                "type": "quantitative",
+                "field": "Price",
+                "title": "Expenditure in million Australian dollars"
+              }
+            },
+            "layer": [
+              {
+                "mark": {
+                  "type": "text",
+                  "stroke": "white",
+                  "strokeWidth": 2,
+                  "align": "left",
+                  "dx": 5,
+                  "dy": -5
+                }
+              },
+              {
+                "mark": {"type": "text", "align": "left", "dx": 5, "dy": -5},
+                "encoding": {
+                  "color": {"type": "nominal", "field": "Type"}
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
