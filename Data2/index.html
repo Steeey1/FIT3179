@@ -133,16 +133,16 @@
     function updateVisualizations(selectedState) {
       var stateSelection = selectedState ? selectedState : null;
 
-      var mapSpec="/js/map.vg.json";
+      var mapSpec="./js/map.vg.json";
       vegaEmbed('#map-viz', mapSpec);
       
-      var mappSpec = "/js/mapp.vg.json";
+      var mappSpec = "./js/mapp.vg.json";
       vegaEmbed('#map-vie', mappSpec);
      
-      var barSpec = "/js/bar.vg.json";
+      var barSpec = "https://raw.githubusercontent.com/Steeey1/FIT3179/refs/heads/main/Data2/js/bar.vg.json";
       vegaEmbed('#bar-viz', barSpec);
 
-      var lineSpec = "/js/line.vg.json";
+      var lineSpec = "./js/line.vg.json";
       vegaEmbed('#line-viz',lineSpec);
 
     }  
