@@ -133,8 +133,8 @@
     function updateVisualizations(selectedState) {
       var stateSelection = selectedState ? selectedState : null;
 
-      
-      vegaEmbed('#map-viz', '/js/map.vg.json').catch(console.warn);
+      var mappSpec = "/js/map.vg.json";
+      vegaEmbed('#map-viz', mapSpec);
       
       var mappSpec = "/js/mapp.vg.json";
       vegaEmbed('#map-vie', mappSpec);
